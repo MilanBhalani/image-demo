@@ -618,7 +618,6 @@
           let htmlElement = document.getElementById("cardContent");
           html2canvas(htmlElement, {
             allowTaint: true,
-            useCors: true,
           }).then((canvas) => {
             const dataURL = canvas.toDataURL("image/png");
 
