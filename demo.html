@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=336, initial-scale=1.0" />
+
+    <title>Digital Visiting Card</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.9.0/html-to-image.js"></script>
+
+    <script src="https://unpkg.com/html-to-image"></script>
+
+    <style>
+      /* Reset and base styles */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins";
+        margin: 0;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      /* Container for both cards side-by-side */
+      .card-container {
+        display: flex;
+        gap: 50px;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: nowrap;
+        max-width: 1100px;
+        width: 1100px;
+        margin: 0 auto;
+      }
+
+      /* Visiting card base style */
+      .visiting-card {
+        width: 100%;
+        max-width: 336px;
+        height: 192px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 25px 30px;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        flex-shrink: 0;
+      }
+
+      .visiting-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Front card styles */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        margin-bottom: 3px;
+      }
+
+      .info .name {
+        font-size: 12px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 5px;
+      }
+
+      .info .designation {
+        font-size: 8.66px;
+        color: #222;
+        line-height: 1.3;
+      }
+
+      .profile-pic {
+        width: 85px;
+        height: 40px;
+        margin-bottom: 50px;
+      }
+
+      .main-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 30px;
+        font-size: 14px;
+        color: #222;
+      }
+
+      .detail-item {
+        display: flex;
+      }
+
+      .detail-item strong {
+        width: 90px;
+        color: #222;
+        font-weight: 600;
+      }
+
+      .contact-section {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+
+        gap: 10px;
+      }
+
+      .qr-code img {
+        margin-top: 7px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+        font-size: 8.66px;
+        min-width: 150px;
+      }
+
+      .contact-item {
+        display: flex;
+        align-items: center;
+
+        gap: 5px;
+        color: #222;
+        min-width: 150px; /* Ensures all items start at same left */
+      }
+
+      .contact-item i {
+        font-size: 9px;
+        margin-top: 1px;
+        color: #3e5d7b;
+        min-width: 15px;
+        text-align: center; /* Center icon in its space */
+      }
+
+      .blue-strip {
+        position: absolute;
+        right: -35px;
+        bottom: 0;
+        width: 40px;
+        height: 100%;
+        background-color: #3e5d7b;
+        transform: skewX(-9deg);
+        z-index: 0;
+      }
+
+      .green-strip {
+        position: absolute;
+        bottom: -70px;
+        left: 0;
+        width: 120%;
+        height: 55px;
+        background-color: #4caf50;
+        transform: rotate(-6deg);
+        transform-origin: left;
+        z-index: 0;
+      }
+
+      .placeholder {
+        text-align: center;
+        padding: 100px 20px;
+        color: #999;
+        font-size: 18px;
+        font-style: italic;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .download-button {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        text-decoration: none;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        min-width: 160px;
+        gap: 10px;
+      }
+
+      .download-button-hide {
+        display: none !important;
+      }
+
+      .download-button:hover:not(:disabled) {
+        background-color: #367c39;
+        box-shadow: 0 7px 20px rgba(54, 124, 57, 0.7);
+      }
+
+      .download-button:disabled {
+        background-color: #a5d6a7;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .download-button i {
+        font-size: 16px;
+      }
+
+      /* === Backside Card Styles === */
+      .visiting-card.backside {
+        position: relative;
+        padding: 25px 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        background: #fff;
+        width: 100%;
+        max-width: 336px;
+        height: 192px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        flex-shrink: 0;
+      }
+
+      .visiting-card.backside:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Profile image top-left fixed */
+
+      .backside .profile-pic {
+        width: 140px;
+        height: 109px;
+        margin: 0;
+        position: absolute;
+        left: -6.5px;
+      }
+
+      /* Address bottom-left */
+      .backside .address {
+        font-size: 7.68px;
+        color: #222;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        max-width: 60%;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+      }
+
+      .backside .address i {
+        color: #4caf50;
+        margin-right: 8px;
+      }
+
+      /* QR Code bottom-right */
+      .backside .qr-code {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .backside .qr-code img {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* === Responsive: stack cards vertically on mobile, keep desktop card layout === */
+      @media (max-width: 800px) {
+        .visiting-card.backside {
+          max-width: 336px;
+          height: 192px;
+          width: 100%;
+          margin-left: auto;
+          margin-right: auto;
+          position: relative;
+          padding: 20px 20px 140px; /* extra bottom padding for QR and address */
+          align-items: center;
+          min-height: auto;
+          overflow: visible;
+        }
+
+        .backside .profile-pic {
+          width: 140px;
+          height: 109px;
+          top: 10px;
+          left: -6.5px;
+        }
+        .card-container {
+          flex-direction: column;
+          width: 100%;
+          max-width: 100%;
+          gap: 25px;
+        }
+
+        .visiting-card {
+          max-width: 336px;
+          height: 192px;
+          width: 100%;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .visiting-card.backside {
+          max-width: 336px;
+          height: 192px;
+          width: 100%;
+          margin-left: auto;
+          margin-right: auto;
+          position: relative;
+          padding: 20px 20px 140px; /* extra bottom padding for QR and address */
+          align-items: center;
+          min-height: auto;
+          overflow: visible;
+        }
+
+        .backside .profile-pic {
+          width: 140px;
+          height: 109px;
+          top: 10px;
+          left: -6.5px;
+        }
+        .card-container {
+          flex-direction: column;
+          width: 100%;
+          max-width: 100%;
+          gap: 25px;
+        }
+
+        .visiting-card {
+          max-width: 336px;
+          height: 192px;
+          width: 100%;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      @media print {
+        #printButton,
+        .noprint,
+        .button-container {
+          display: none !important;
+        }
+        body {
+          -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+          print-color-adjust: exact !important; /* Modern browsers */
+          background: inherit !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card-container">
+      <!-- Front card -->
+      <div class="visiting-card" id="cardContent">
+        <!-- <div class="placeholder">Loading...</div> -->
+      </div>
+
+      <!-- Back card -->
+      <div
+        class="visiting-card backside"
+        id="backCardContent"
+        style="display: none"
+      >
+        <img
+          crossorigin="anonymous"
+          class="profile-pic"
+          id="backProfilePic"
+          src="https://vcard.apanel.leewaysofttech.com/Businesscrad_QRcode_Deatils/uploads/Jindal_icon.svg"
+          alt="Profile Image"
+          style="display: none"
+        />
+
+        <div
+          class="address"
+          id="backAddress"
+          style="color: #222; font-size: 14px; max-width: 250px"
+        ></div>
+
+        <div class="qr-code" id="backQrCode"></div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button class="download-button" id="downloadButton" style="display: none">
+        <i class="fas fa-download"></i> Download Visiting Card
+      </button>
+      <button class="download-button" id="printButton">
+        <i class="fas fa-print"></i> Print Card
+      </button>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+      (function () {
+        const uuid = new URLSearchParams(window.location.search).get("uuid");
+        const downloadButton = document.getElementById("downloadButton");
+        const printButton = document.getElementById("printButton");
+        const cardContent = document.getElementById("cardContent");
+        const backCardContent = document.getElementById("backCardContent");
+        const backProfilePic = document.getElementById("backProfilePic");
+        const backAddress = document.getElementById("backAddress");
+        const backQrCode = document.getElementById("backQrCode");
+
+        if (!uuid) {
+          cardContent.innerHTML =
+            '<div class="placeholder">UUID is missing from URL.</div>';
+          downloadButton.style.display = "none";
+          printButton.style.display = "none";
+          backCardContent.style.display = "none";
+          return;
+        }
+
+        let fetchedUserData = null;
+
+        fetch(
+          `https://vcard.apanel.leewaysofttech.com/Businesscrad_QRcode_Deatils/get_vcard.php?uuid=${uuid}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && data.user) {
+              const user = data.user;
+              fetchedUserData = data.user;
+
+              // Parse websites and social media
+              let websites = [];
+              let socialmedia = [];
+              try {
+                websites = user.websites ? JSON.parse(user.websites) : [];
+              } catch (e) {
+                websites = [];
+              }
+              try {
+                socialmedia = user.socialmedia
+                  ? JSON.parse(user.socialmedia)
+                  : [];
+              } catch (e) {
+                socialmedia = [];
+              }
+
+              // Front card HTML
+              const frontHtml = `
+                           
+                            
+                            <div class="header" >
+                                <div class="info">
+                                    <div class="name">${(
+                                      (user.firstname || "") +
+                                      " " +
+                                      (user.lastname || "")
+                                    ).trim()}</div>
+                                    <div class="designation">${
+                                      user.jobtitle || ""
+                                    }</div>
+                                    <div class="designation">${
+                                      user.department || ""
+                                    }</div>
+                                </div>
+                                     <img 
+                                      crossorigin="anonymous"
+                                     
+                                     class="profile-pic" src="https://vcard.apanel.leewaysofttech.com/Businesscrad_QRcode_Deatils/uploads/jindal_profile.png" alt="Profile Image" />
+                                </div>
+                                
+                                <div class="contact-section">
+  ${
+    user.qrcode
+      ? ``
+      : ""
+  }
+  <div class="contact-details">
+   ${
+     user.mobile
+       ? `<div class="contact-item"><i class="fas fa-phone"></i> <span class="phone">${formatPhone(
+           user.mobile
+         )}</span></div>`
+       : ""
+   }
+    ${
+      user.workphone
+        ? `<div class="contact-item"><i class="fas fa-mobile-alt"></i> <span class="phone">${formatPhone1(
+            user.workphone
+          )}</span></div>`
+        : ""
+    }
+   
+    ${
+      user.emailid
+        ? `<div class="contact-item"><i class="fas fa-envelope"></i> <span>${user.emailid}</span></div>`
+        : ""
+    }
+  </div>
+</div>
+
+                           
+                            
+                            
+                           
+                           
+                            <div class="blue-strip"></div>
+                            <div class="green-strip"></div>
+                        `;
+              cardContent.innerHTML = frontHtml;
+
+              // Back card content: company name above address
+              let backHtml = "";
+              if (user.companyname) {
+                backHtml += `<div style="font-size:9.6px; font-weight:700; color:#3E5D7B; margin-top:10px !important">${user.companyname}</div>`;
+              }
+              /* if (user.address) {
+              backHtml += `<div style="font-size:12px;  margin-top:0px !important">${user.address}</div>`;
+            }*/
+              if (user.address) {
+                // Split by comma
+                const parts = user.address.split(",").map((s) => s.trim());
+
+                // Defensive: check length
+                let line1 = "";
+                let line2 = "";
+                if (parts.length >= 4) {
+                  // Combine as per your requirement
+                  line1 = parts[0] + ", " + parts[1];
+                  line2 = parts[2] + " " + parts[3];
+
+                  // Optional: Format second line as per your example
+                  // Remove space from postal code and add (INDIA)
+                  line2 = line2
+                    .replace(" - ", " -")
+                    .replace(", INDIA", " (INDIA)");
+                } else {
+                  // Fallback: join all with <br>
+                  line1 = user.address;
+                  line2 = "";
+                }
+
+                backHtml += `<div style="font-size:7.68px; margin-top:0px !important">${line1}<br>${line2}</div>`;
+              }
+
+              backAddress.innerHTML = backHtml;
+
+              // Profile image and QR code
+              if (user.profile_image) {
+                //   backProfilePic.src = user.profile_image;
+                backProfilePic.src =
+                  "https://vcard.apanel.leewaysofttech.com/Businesscrad_QRcode_Deatils/uploads/Jindal_icon.svg";
+                backProfilePic.style.display = "block";
+              } else {
+                backProfilePic.src =
+                  "https://vcard.apanel.leewaysofttech.com/Businesscrad_QRcode_Deatils/uploads/Jindal_icon.svg";
+                backProfilePic.style.display = "block";
+              }
+              backQrCode.innerHTML = user.qrcode
+                ? ``
+                : "";
+              backCardContent.style.display = "flex";
+
+              downloadButton.style.display = "inline-flex";
+              printButton.style.display = "inline-flex";
+            } else {
+              cardContent.innerHTML = `<div class="placeholder">${
+                data.message || "User not found."
+              }</div>`;
+              downloadButton.style.display = "none";
+              printButton.style.display = "none";
+              backCardContent.style.display = "none";
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            cardContent.innerHTML =
+              '<div class="placeholder">Failed to load data.</div>';
+            downloadButton.style.display = "none";
+            printButton.style.display = "none";
+            backCardContent.style.display = "none";
+          });
+        function downloadCard() {
+          let htmlElement = document.getElementById("cardContent");
+          html2canvas(htmlElement, {
+            allowTaint: true,
+            useCors: true,
+          }).then((canvas) => {
+            const dataURL = canvas.toDataURL("image/png");
+
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("xmlns", svgNS);
+            svg.setAttribute("width", canvas.width);
+            svg.setAttribute("height", canvas.height);
+
+            const image = document.createElementNS(svgNS, "image");
+            image.setAttribute("href", dataURL);
+            image.setAttribute("width", canvas.width);
+            image.setAttribute("height", canvas.height);
+
+            svg.appendChild(image);
+            document.body.appendChild(svg);
+
+            // --- Serialize & download ---
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svg);
+            const blob = new Blob([svgString], { type: "image/svg+xml" });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "exported.svg";
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          });
+        }
+
+        // Download button click handler
+        downloadButton.addEventListener("click", function (e) {
+          // e.preventDefault();
+
+          // if (!fetchedUserData) {
+          //   alert("User data not loaded yet. Please wait.");
+          //   return;
+          // }
+          downloadCard();
+          // downloadCardsAsSVG();
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+<script>
+  function formatPhone(number) {
+    // Remove all non-digit characters
+    let digits = number.replace(/\D/g, "");
+
+    if (digits.length === 12) {
+      // Format: +91 11 6146 2503
+      return `+${digits.slice(0, 2)} ${digits.slice(2, 4)} ${digits.slice(
+        4,
+        8
+      )} ${digits.slice(8)}`;
+    } else if (digits.length === 10) {
+      // Format: +91 81309 33655
+      return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+    }
+    return number; // fallback
+  }
+
+  function formatPhone1(number) {
+    // Remove all non-digit characters
+    let digits = number.replace(/\D/g, "");
+
+    // If the number starts with '91' and is 12 digits, treat as Indian mobile
+    if (digits.length === 12 && digits.startsWith("91")) {
+      return `+91 ${digits.slice(2, 7)} ${digits.slice(7)}`;
+    } else if (digits.length === 10) {
+      return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+    }
+    return number; // fallback
+  }
+
+  async function downloadCardsAsSVG() {
+    console.log("Download button clicked, starting download process...");
+
+    // Get the card elements
+    const frontCard = document.getElementById("cardContent");
+    const backCard = document.getElementById("backCardContent");
+
+    // Ensure both cards are visible for export
+    backCard.style.display = "block"; // Ensure the back card is visible when exporting
+
+    // Wait for images to load before exporting
+    console.log("Waiting for images to load...");
+    await waitForImages(frontCard);
+    await waitForImages(backCard);
+
+    console.log("All images loaded");
+
+    // Clone both cards to create an offscreen container
+    const container = document.createElement("div");
+    container.style.display = "flex";
+    container.style.flexDirection = "row"; // Make them side by side
+    container.style.gap = "20px"; // Space between the two cards
+
+    // Clone both front and back cards
+    const frontClone = frontCard.cloneNode(true);
+    const backClone = backCard.cloneNode(true);
+
+    // Reset their styles to ensure they fit correctly in the SVG
+    frontClone.style.margin = "0";
+    backClone.style.margin = "0";
+    frontClone.style.display = "block";
+    backClone.style.display = "block";
+
+    // Append the clones to the container
+    container.appendChild(frontClone);
+    container.appendChild(backClone);
+
+    // Attach the container to the DOM temporarily to apply styles
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    document.body.appendChild(container);
+
+    // Wait for fonts to load
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    // Use html-to-image to capture the content as SVG
+    try {
+      console.log("Capturing SVG...");
+      const svgData = await htmlToImage.toSvg(container, {
+        bgcolor: "#ffffff", // Set background color to white if necessary
+        width: container.offsetWidth,
+        height: container.offsetHeight,
+        filter: (node) => node.nodeName !== "script", // Optional: Exclude script tags if any
+      });
+
+      // Log SVG Data for debugging
+      console.log("SVG Data:", svgData);
+
+      // Create a Blob from the SVG data and trigger the download
+      const svgBlob = new Blob([svgData], {
+        type: "image/svg+xml;charset=utf-8",
+      });
+
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      // Create an anchor tag for download
+      const a = document.createElement("a");
+      a.href = svgUrl;
+      a.download = "visiting-cards.svg"; // Name the file
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error("Failed to capture SVG:", err);
+      alert("Failed to capture SVG. See console for details.");
+    } finally {
+      // Clean up
+      document.body.removeChild(container);
+    }
+  }
+
+  function waitForImages(element) {
+    return new Promise((resolve, reject) => {
+      const images = element.getElementsByTagName("img");
+      const totalImages = images.length;
+      let loadedImages = 0;
+
+      if (totalImages === 0) {
+        console.log("No images found, resolving immediately.");
+        resolve(); // If no images, immediately resolve
+        return;
+      }
+
+      console.log(`Waiting for ${totalImages} images to load...`);
+
+      // Check each image for load event
+      Array.from(images).forEach((img) => {
+        if (img.complete) {
+          loadedImages++;
+          console.log(`Image already loaded: ${img.src}`);
+        } else {
+          img.onload = img.onerror = () => {
+            loadedImages++;
+            console.log(`Image loaded: ${img.src}`);
+            if (loadedImages === totalImages) {
+              console.log("All images loaded");
+              resolve();
+            }
+          };
+        }
+      });
+    });
+  }
+</script>
