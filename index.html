@@ -506,7 +506,7 @@
                                 <div class="contact-section">
   ${
     user.qrcode
-      ? ``
+      ? `<div class="qr-code"><img crossorigin="anonymous" src="${user.qrcode}" alt="QR Code" /></div>`
       : ""
   }
   <div class="contact-details">
@@ -591,7 +591,7 @@
                 backProfilePic.style.display = "block";
               }
               backQrCode.innerHTML = user.qrcode
-                ? ``
+                ? `<img crossorigin="anonymous"  src="${user.qrcode}" alt="QR Code" />`
                 : "";
               backCardContent.style.display = "flex";
 
@@ -618,6 +618,7 @@
           let htmlElement = document.getElementById("cardContent");
           html2canvas(htmlElement, {
             allowTaint: true,
+            useCors: true,
           }).then((canvas) => {
             const dataURL = canvas.toDataURL("image/png");
 
